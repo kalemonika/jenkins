@@ -1,0 +1,55 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: My first template
+
+Resources:
+  FirstUser:
+   Type: AWS::IAM::User
+   Properties:
+      Path: /
+      Tags: 
+        - Key: Purpose
+          Value: demo
+      UserName: paul
+
+  MyfirstGroup:
+   Type: AWS::IAM::Group
+   Properties:
+      GroupName: cloudblitz  
+
+  Ec2Instance:
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId: ami-03f4878755434977f
+      InstanceType: t2.micro
+      KeyName: inst1
+      Tags: 
+        - Key: name
+          Value: demo-instance1  #error: capital V
+        - Key: Project
+          Value: cloud-project1  #multi tagging   
+
+  MyS3bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: cloudblitzcdec.b22.monika123
+
+  MyS3BucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Effect: Allow
+            Principal: '*'
+            Action:
+              - s3:GetObject
+            Resource: !Sub 'arn:aws:s3:::${MyS3bucket}/*'
+      Bucket: !Ref MyS3bucket    
+
+  AddUser:
+    Type: AWS::IAM::UserToGroupAddition
+    Properties:
+        GroupName: MyfirstGroup 
+        Users: FirstUser          
+                     
+                
+      
